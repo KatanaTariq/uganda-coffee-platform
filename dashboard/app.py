@@ -129,3 +129,54 @@ fig3.update_layout(
     yaxis_title="Revenue (Billion UGX)",
 )
 st.plotly_chart(fig3, use_container_width=True)
+
+st.divider()
+
+# Price Forecast section
+st.subheader("Price forecast")
+
+with st.spinner("Training forecast model — please wait..."):
+    from models.forecast import train_and_forecast
+    forecast, metrics = train_and_forecast(df, col, periods=12)
+
+m1, m2, m3 = st.columns(3)
+m1.metric("MAE", f"${metrics['mae']}/kg")
+m2.metric("RMSE", f"${metrics['rmse']}/kg")
+m3.metric("MAPE", f"{metrics['mape']}%")
+
+fig4 = go.Figure()
+
+fig4.add_trace(go.Scatter(
+    x=df_filtered["date"],
+    y=df_filtered[f"{col}_usd"],
+    name="Historical price",
+    line=dict(color="#8B4513", width=1.5)
+))
+fig4.add_trace(go.Scatter(
+    x=forecast["ds"],
+    y=forecast["yhat"],
+    name="Price forecast",
+    line=dict(color="#1D9E75", width=2, dash="dot")
+))
+fig4.add_trace(go.Scatter(
+    x=list(forecast["ds"]) + list(forecast["ds"][::-1]),
+    y=list(forecast["yhat_upper"]) + list(forecast["yhat_lower"][::-1]),
+    fill="toself",
+    fillcolor="rgba(29,158,117,0.1)",
+    line=dict(color="rgba(255,255,255,0)"),
+    name="95% confidence interval"
+))
+fig4.update_layout(
+    template="plotly_white",
+    yaxis_title="Price (USD/kg)",
+    hovermode="x unified",
+    xaxis=dict(range=["2015-01-01", "2027-06-01"])
+)
+st.plotly_chart(fig4, use_container_width=True)
+
+st.caption(
+    "MAE = average error in USD/kg. "
+    "RMSE = penalises large errors more heavily. "
+    "MAPE = average error as a percentage of actual price. "
+    "Wide confidence intervals reflect genuine commodity market uncertainty."
+)
