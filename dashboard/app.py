@@ -3,7 +3,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src")
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from processing.clean import load_coffee_prices, add_features
 from models.risk import risk_summary
