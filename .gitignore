@@ -180,6 +180,7 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 # Project specific
-data/raw/
+data/raw/*.nc
+data/raw/*.xlsx.bak
 *.nc
 *.db
