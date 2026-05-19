@@ -4,7 +4,8 @@ import plotly.graph_objects as go
 import pandas as pd
 from plotly.subplots import make_subplots
 
-sys.path.append("../../src")
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
 UG_BLACK = "#1a1a1a"
 UG_YELLOW = "#FCDC04"

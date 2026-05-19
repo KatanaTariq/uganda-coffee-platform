@@ -2,7 +2,8 @@ import sys
 import streamlit as st
 import pandas as pd
 
-sys.path.append("../../src")
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 from models.recommendation import compute_signals, generate_recommendations
 
 UG_BLACK = "#1a1a1a"
