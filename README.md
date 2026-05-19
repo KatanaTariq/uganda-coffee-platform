@@ -6,7 +6,7 @@ A commodity risk analytics platform for Uganda's coffee export market.
 **Live demo:** https://uganda-coffee-platform.streamlit.app
 
 ## What it does
-- Historical Arabica and Robusta price analysis (1960–2026)
+- Historical Arabica and Robusta price analysis (2000–2026)
 - UGX/USD exchange rate impact analysis using Bank of Uganda data
 - 12-month price forecast with confidence intervals
 - Interactive revenue simulator with scenario stress testing
