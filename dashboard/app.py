@@ -104,9 +104,10 @@ st.markdown(f"""
 
 @st.cache_data
 def load_data():
-    df = load_coffee_prices("../data/raw/coffee_prices.xlsx")
+    base = os.path.join(os.path.dirname(__file__), "..")
+    df = load_coffee_prices(os.path.join(base, "data", "raw", "coffee_prices.xlsx"))
     df = add_features(df)
-    fx = pd.read_csv("../data/processed/ugx_usd_monthly.csv", parse_dates=["date"])
+    fx = pd.read_csv(os.path.join(base, "data", "processed", "ugx_usd_monthly.csv"), parse_dates=["date"])
     df = df.merge(fx, on="date", how="left")
     df["arabica_ugx"] = df["arabica_usd"] * df["ugx_per_usd"]
     df["robusta_ugx"] = df["robusta_usd"] * df["ugx_per_usd"]

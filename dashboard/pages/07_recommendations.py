@@ -104,11 +104,11 @@ st.sidebar.caption("Built by Katana Imran · Aston University · 2026")
 
 @st.cache_data
 def load():
+    base = os.path.join(os.path.dirname(__file__), "..", "..")
     return pd.read_csv(
-        "../data/processed/master_dataset.csv",
+        os.path.join(base, "data", "processed", "master_dataset.csv"),
         parse_dates=["date"]
     )
-
 
 df = load()
 col = "arabica" if coffee_type == "Arabica" else "robusta"

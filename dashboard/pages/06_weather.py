@@ -125,9 +125,12 @@ st.sidebar.caption("Built by Katana Imran · Aston University · 2026")
 
 @st.cache_data
 def load():
-    df = pd.read_csv("../data/processed/master_dataset.csv", parse_dates=["date"])
+    base = os.path.join(os.path.dirname(__file__), "..", "..")
+    df = pd.read_csv(
+        os.path.join(base, "data", "processed", "master_dataset.csv"),
+        parse_dates=["date"]
+    )
     return df.dropna(subset=["rainfall_mm"])
-
 
 df = load()
 latest = df.iloc[-1]
