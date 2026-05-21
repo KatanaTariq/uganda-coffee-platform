@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 import os
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from processing.clean import load_coffee_prices, add_features
@@ -107,7 +108,10 @@ def load_data():
     base = os.path.join(os.path.dirname(__file__), "..")
     df = load_coffee_prices(os.path.join(base, "data", "raw", "coffee_prices.xlsx"))
     df = add_features(df)
-    fx = pd.read_csv(os.path.join(base, "data", "processed", "ugx_usd_monthly.csv"), parse_dates=["date"])
+    fx = pd.read_csv(
+        os.path.join(base, "data", "processed", "ugx_usd_monthly.csv"),
+        parse_dates=["date"]
+    )
     df = df.merge(fx, on="date", how="left")
     df["arabica_ugx"] = df["arabica_usd"] * df["ugx_per_usd"]
     df["robusta_ugx"] = df["robusta_usd"] * df["ugx_per_usd"]
@@ -141,6 +145,16 @@ st.sidebar.markdown("**Year range**")
 st.sidebar.caption("Drag to zoom into a specific period")
 year_range = st.sidebar.slider("", min_value=1960, max_value=2026, value=(2000, 2026))
 st.sidebar.divider()
+st.sidebar.markdown(f"""
+<div style="background:rgba(252,220,4,0.1);border:0.5px solid {UG_YELLOW};
+    border-radius:8px;padding:10px 12px;margin-bottom:8px">
+    <p style="font-size:11px;font-weight:500;color:var(--text-color);margin:0 0 3px">
+    New — Investment Marketplace</p>
+    <p style="font-size:11px;color:#888780;margin:0;line-height:1.5">
+    Browse farm opportunities and model projected returns</p>
+</div>
+""", unsafe_allow_html=True)
+st.sidebar.divider()
 st.sidebar.markdown("**Data sources**")
 st.sidebar.caption("ICO / World Bank — coffee prices")
 st.sidebar.caption("Bank of Uganda — UGX/USD rates")
@@ -167,6 +181,20 @@ st.markdown(f"""
     </div>
     <p style="color:{UG_YELLOW};font-weight:600;font-size:20px;margin:0">Uganda Coffee Price & Risk Platform</p>
     <p style="color:#888780;font-size:12px;margin:4px 0 0">Real-time commodity analytics · ICO prices · Bank of Uganda FX · ERA5 satellite climate data</p>
+</div>
+""", unsafe_allow_html=True)
+
+# Marketplace banner
+st.markdown(f"""
+<div style="background:rgba(252,220,4,0.1);border:1px solid {UG_YELLOW};
+    border-radius:10px;padding:12px 16px;margin-bottom:20px">
+    <span style="font-size:11px;font-weight:500;background:{UG_YELLOW};
+        color:{UG_BLACK};padding:2px 8px;border-radius:4px;margin-right:8px">New</span>
+    <span style="font-size:13px;font-weight:500;color:var(--text-color)">
+        Investment Marketplace</span>
+    <span style="font-size:13px;color:#888780;margin-left:8px">
+        — Browse Ugandan coffee farm opportunities and model your projected returns.
+        Open the marketplace from the sidebar.</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -215,12 +243,18 @@ fig.add_trace(go.Scatter(
     x=df_filtered["date"], y=df_filtered[f"{col}_ma3"],
     name="3M moving average", line=dict(color=UG_YELLOW, dash="dot", width=1.5)
 ))
-fig.update_layout(template="plotly_white", hovermode="x unified",
-                  yaxis_title="Price (USD/kg)")
+fig.update_layout(
+    template="plotly_white",
+    hovermode="x unified",
+    yaxis_title="Price (USD/kg)"
+)
 st.plotly_chart(fig, use_container_width=True)
 st.markdown("""<div class="explain-yellow">
 <p class="explain-title">What you are looking at</p>
-<p class="explain-body">This shows the price of coffee per kilogram in US dollars over time. The red line is the actual price — the yellow dotted line smooths out short-term noise to reveal the bigger trend. Prices spike when harvests fail and fall when global supply is high. Higher prices mean more income for Ugandan farmers and exporters.</p>
+<p class="explain-body">This shows the price of coffee per kilogram in US dollars over time.
+The red line is the actual price — the yellow dotted line smooths out short-term noise to
+reveal the bigger trend. Prices spike when harvests fail and fall when global supply is high.
+Higher prices mean more income for Ugandan farmers and exporters.</p>
 </div>""", unsafe_allow_html=True)
 
 st.divider()
@@ -234,14 +268,22 @@ fig2.add_trace(go.Scatter(
     line=dict(color=UG_RED, width=2),
     fill="tozeroy", fillcolor="rgba(217,0,0,0.08)"
 ))
-fig2.add_hline(y=10, line_dash="dot", line_color=UG_YELLOW,
-               annotation_text="Caution zone", annotation_position="top left")
-fig2.update_layout(template="plotly_white", yaxis_title="Volatility (%)",
-                   hovermode="x unified")
+fig2.add_hline(
+    y=10, line_dash="dot", line_color=UG_YELLOW,
+    annotation_text="Caution zone", annotation_position="top left"
+)
+fig2.update_layout(
+    template="plotly_white",
+    yaxis_title="Volatility (%)",
+    hovermode="x unified"
+)
 st.plotly_chart(fig2, use_container_width=True)
 st.markdown("""<div class="explain-red">
 <p class="explain-title">What you are looking at</p>
-<p class="explain-body">Volatility measures how wildly prices are jumping around — think of it as a risk speedometer. When the line rises above the yellow caution line, prices are swinging so unpredictably that it becomes very difficult for farmers to plan their income or for exporters to sign contracts with confidence.</p>
+<p class="explain-body">Volatility measures how wildly prices are jumping around — think of it
+as a risk speedometer. When the line rises above the yellow caution line, prices are swinging
+so unpredictably that it becomes very difficult for farmers to plan their income or for
+exporters to sign contracts with confidence.</p>
 </div>""", unsafe_allow_html=True)
 
 st.divider()
@@ -255,15 +297,20 @@ fig_fx.add_trace(go.Scatter(
     line=dict(color="#534AB7", width=2),
     fill="tozeroy", fillcolor="rgba(83,74,183,0.08)"
 ))
-fig_fx.update_layout(template="plotly_white", yaxis_title="UGX per 1 USD",
-                     hovermode="x unified")
+fig_fx.update_layout(
+    template="plotly_white",
+    yaxis_title="UGX per 1 USD",
+    hovermode="x unified"
+)
 st.plotly_chart(fig_fx, use_container_width=True)
 
 fx1, fx2, fx3 = st.columns(3)
 fx1.metric("Current rate", f"{current_fx:,} UGX")
 rate_1yr = df_fx_chart[df_fx_chart["date"] == "2025-04-01"]["ugx_per_usd"]
-fx2.metric("Rate 1 year ago",
-           f"{int(rate_1yr.values[0]):,} UGX" if len(rate_1yr) > 0 else "N/A")
+fx2.metric(
+    "Rate 1 year ago",
+    f"{int(rate_1yr.values[0]):,} UGX" if len(rate_1yr) > 0 else "N/A"
+)
 rate_2020 = df_fx_chart[df_fx_chart["date"] == "2020-01-01"]["ugx_per_usd"]
 if len(rate_2020) > 0:
     change = ((current_fx / rate_2020.values[0]) - 1) * 100
@@ -271,7 +318,11 @@ if len(rate_2020) > 0:
 
 st.markdown("""<div class="explain-black">
 <p class="explain-title">What you are looking at</p>
-<p class="explain-body">This shows how many Ugandan shillings you get for one US dollar over time. Coffee is priced in dollars globally but Ugandan exporters spend in shillings. When this line rises — more shillings per dollar — exporters earn more in local currency even if the dollar price stays flat. The shilling has weakened significantly since 2005, which has actually benefited exporters in UGX terms.</p>
+<p class="explain-body">This shows how many Ugandan shillings you get for one US dollar over
+time. Coffee is priced in dollars globally but Ugandan exporters spend in shillings. When this
+line rises — more shillings per dollar — exporters earn more in local currency even if the
+dollar price stays flat. The shilling has weakened significantly since 2005, which has actually
+benefited exporters in UGX terms.</p>
 </div>""", unsafe_allow_html=True)
 
 st.divider()
@@ -281,8 +332,10 @@ st.subheader("Revenue simulator")
 st.caption("Drag the sliders below to model different export scenarios and see how revenue changes in real time.")
 
 s1, s2, s3 = st.columns(3)
-price = s1.slider("Coffee price (USD/kg)", 1.0, 10.0,
-                  float(round(risk["current_price_usd"], 2)), 0.05)
+price = s1.slider(
+    "Coffee price (USD/kg)", 1.0, 10.0,
+    float(round(risk["current_price_usd"], 2)), 0.05
+)
 volume = s2.slider("Export volume (tonnes)", 100, 5000, 1000, 50)
 fx = s3.slider("UGX per USD (exchange rate)", 2500, 5000, current_fx, 10)
 
@@ -294,7 +347,10 @@ r3.metric("Per tonne (UGX)", f"{rev['revenue_per_tonne_ugx']:,.0f}")
 
 st.markdown("""<div class="explain-yellow">
 <p class="explain-title">How to use this</p>
-<p class="explain-body">Revenue = price × volume × exchange rate. Try lowering the exchange rate slider — even if the coffee price stays the same in dollars, you earn fewer shillings. This is called currency risk. Now try lowering both the price and the exchange rate together to see how quickly revenue collapses when two risks hit at once.</p>
+<p class="explain-body">Revenue = price × volume × exchange rate. Try lowering the exchange
+rate slider — even if the coffee price stays the same in dollars, you earn fewer shillings.
+This is called currency risk. Now try lowering both the price and the exchange rate together
+to see how quickly revenue collapses when two risks hit at once.</p>
 </div>""", unsafe_allow_html=True)
 
 st.divider()
@@ -325,7 +381,11 @@ for name, data in scenarios.items():
 
 st.markdown("""<div class="explain-red">
 <p class="explain-title">What you are looking at</p>
-<p class="explain-body">Each row shows what total export revenue would look like if one bad thing happened. The "Combined stress" row is the most important — it shows what happens when a price drop, currency weakening, and volume fall all arrive at the same time. In real commodity markets, bad events tend to cluster together. A 27% revenue drop in a single season is often the difference between a profitable and a loss-making year.</p>
+<p class="explain-body">Each row shows what total export revenue would look like if one bad
+thing happened. The "Combined stress" row is the most important — it shows what happens when
+a price drop, currency weakening, and volume fall all arrive at the same time. In real commodity
+markets, bad events tend to cluster together. A 27% revenue drop in a single season is often
+the difference between a profitable and a loss-making year.</p>
 </div>""", unsafe_allow_html=True)
 
 st.divider()
@@ -359,12 +419,17 @@ fig4.add_trace(go.Scatter(
     name="95% confidence range"
 ))
 fig4.update_layout(
-    template="plotly_white", yaxis_title="Price (USD/kg)",
+    template="plotly_white",
+    yaxis_title="Price (USD/kg)",
     hovermode="x unified",
     xaxis=dict(range=["2015-01-01", "2027-06-01"])
 )
 st.plotly_chart(fig4, use_container_width=True)
 st.markdown("""<div class="explain-black">
 <p class="explain-title">What you are looking at</p>
-<p class="explain-body">The green dotted line is what the model predicts prices will do over the next 12 months. The shaded green band is the confidence range — the model is saying the price will likely land somewhere in this band. A wide band means high uncertainty, which is honest. The model learns from 65 years of price history but cannot predict unexpected events like a drought or a frost in Brazil.</p>
+<p class="explain-body">The green dotted line is what the model predicts prices will do over
+the next 12 months. The shaded green band is the confidence range — the model is saying the
+price will likely land somewhere in this band. A wide band means high uncertainty, which is
+honest. The model learns from 65 years of price history but cannot predict unexpected events
+like a drought or a frost in Brazil.</p>
 </div>""", unsafe_allow_html=True)

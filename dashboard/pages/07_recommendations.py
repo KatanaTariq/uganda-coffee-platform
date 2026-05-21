@@ -250,6 +250,19 @@ for card_label, icon, icon_bg, icon_col, conf_col, rec in cards:
     </div>
     """, unsafe_allow_html=True)
 
+st.divider()
+st.markdown(f"""
+<div style="background:rgba(252,220,4,0.08);border:0.5px solid {UG_YELLOW};
+    border-radius:10px;padding:14px 16px">
+    <p style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin:0 0 4px">
+    Ready to put capital to work in this market?</p>
+    <p style="font-size:12px;color:var(--color-text-secondary);margin:0 0 10px;line-height:1.6">
+    The Investment Marketplace lets you browse Ugandan coffee farm opportunities
+    and model your projected returns across optimistic, baseline, and stressed scenarios
+    — powered by the same live data and forecasts you just reviewed.</p>
+</div>
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <div class="disclaimer">
     This is a quantitative signal, not financial advice. Recommendations are
